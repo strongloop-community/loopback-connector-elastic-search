@@ -2,3 +2,5 @@
 /examples
 .idea
 .jshintrc
+docker-compose.json
+docker-entrypoint.sh
