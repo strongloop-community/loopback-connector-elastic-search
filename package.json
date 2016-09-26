@@ -4,7 +4,7 @@
   "description": "Connect LoopBack to Elasticsearch engine",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "DEBUG=loopback* mocha"
   },
   "keywords": [
     "loopback",

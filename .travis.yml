@@ -1,0 +1,13 @@
+sudo: false
+language: node_js
+node_js:
+  - "0.10"
+  - "0.12"
+  - "4"
+  - "6"
+services:
+  - elasticsearch
+# ElasticSearch takes few seconds to start, to make sure it is available when
+# the build script runs add a small delay to your build script:
+before_script:
+  - sleep 10
