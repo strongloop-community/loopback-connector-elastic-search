@@ -43,10 +43,11 @@
     "async": "^0.9.0",
     "bluebird": "^2.9.14",
     "debug": "^2.1.3",
-    "elastic-deletebyquery": "1.0.7",
+    "elastic-deletebyquery": "https://github.com/tomasiMedia/elastic-deletebyquery.git",
     "elasticsearch": "^11.0.1",
     "lodash": "^3.5.0",
-    "loopback-connector": "^1.1.1"
+    "loopback-connector": "^1.1.1",
+    "moment": "^2.15.1"
   },
   "directories": {
     "example": "examples",
