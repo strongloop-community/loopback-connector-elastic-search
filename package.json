@@ -46,8 +46,7 @@
     "elastic-deletebyquery": "^1.0.8",
     "elasticsearch": "^11.0.1",
     "lodash": "^3.5.0",
-    "loopback-connector": "^1.1.1",
-    "moment": "^2.15.1"
+    "loopback-connector": "^1.1.1"
   },
   "directories": {
     "example": "examples",
