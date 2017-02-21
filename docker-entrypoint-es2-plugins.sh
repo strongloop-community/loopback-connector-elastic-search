@@ -9,5 +9,9 @@
 # https://github.com/mobz/elasticsearch-head/#running-as-a-plugin-of-elasticsearch
 plugin install mobz/elasticsearch-head
 
+
+# access it at /_plugin/elasticsearch-inquisitor/
+plugin install polyfractal/elasticsearch-inquisitor
+
 #exec /docker-entrypoint.sh elasticsearch
 exec elasticsearch -Des.insecure.allow.root=true
