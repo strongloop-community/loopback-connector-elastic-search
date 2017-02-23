@@ -1,0 +1,64 @@
+{
+  "name": "esv5-plain",
+  "connector": "elasticsearch",
+  "index": "shakespeare",
+  "hosts": [
+    {
+      "protocol": "https",
+      "host": "hosted.foundcluster.com",
+      "port": 9243,
+      "auth": "username:password"
+    }
+  ],
+  "apiVersion": "5.0",
+  "log": "trace",
+  "defaultSize": 50,
+  "requestTimeout": 30000,
+  "mappings": [
+    {
+      "name": "User",
+      "properties": {
+        "id": {"type": "keyword"},
+        "seq": {"type": "integer"},
+        "name" : {
+          "type" : "keyword",
+          "fields" : {
+            "native" : {"type" : "keyword"}
+          }
+        },
+        "email": {"type": "keyword"},
+        "birthday": {"type": "date"},
+        "role": {"type": "keyword"},
+        "order": {"type": "integer"},
+        "vip": {"type": "boolean"}
+      }
+    },
+    {
+      "name": "Customer",
+      "index": "juju",
+      "type": "consumer",
+      "properties": {
+        "objectId": {"type": "keyword"},
+        "name" : {
+          "type" : "keyword",
+          "fields" : {
+            "native" : {"type" : "keyword"}
+          }
+        },
+        "email": {"type": "keyword"},
+        "birthday": {"type": "date"},
+        "role": {"type": "keyword"},
+        "order": {"type": "integer"},
+        "vip": {"type": "boolean"}
+      }
+    },
+    {
+      "name": "AccessToken",
+      "properties": {
+        "id": { "type": "keyword" },
+        "ttl": { "type": "integer" },
+        "created": { "type": "date" }
+      }
+    }
+  ]
+}

@@ -71,7 +71,7 @@ describe('basic-querying', function () {
 		});
 
 		PostWithId = db.define('PostWithId', {
-			id: {type: String, id: true},
+			id: {type: String},
 			title: {type: String, length: 255},
 			content: {type: String}
 		});
@@ -206,8 +206,8 @@ describe('basic-querying', function () {
 
 		it('suggests query should work', function (done) {
 			User.all({
-				suggests: {
-					'title_suggester': {
+				suggest: {
+					title_suggester: {
 						text: 'd',
 						term: {
 							field: 'name'
@@ -1380,7 +1380,7 @@ describe('basic-querying', function () {
 
 });
 
-function seed(done) {
+function seed() {
 	this.timeout(4000);
 	var beatles = [
 		{
@@ -1407,14 +1407,9 @@ function seed(done) {
 		{seq: 5, name: 'Stuart Sutcliffe', order: 3, vip: true}
 	];
 
-	async.series([
-		User.destroyAll.bind(User),
-		function (cb) {
-			setTimeout(function () {
-				async.each(beatles, User.create.bind(User), cb);
-			}, 2000);
-		}
-	], done);
+	return User.destroyAll().then(function() {
+		return User.create(beatles);
+	});
 }
 
 function seedCustomers(done) {

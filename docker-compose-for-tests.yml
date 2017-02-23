@@ -13,3 +13,7 @@ services:
     volumes:
      - .:/apps
     entrypoint: /apps/docker-entrypoint-es2-plugins.sh
+  es_v5:
+    image: elasticsearch:5
+    ports:
+     - "9203:9200"
