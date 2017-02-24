@@ -5,6 +5,11 @@ module.exports = {
     ,'node': true
   },
   'globals': {
-    'expect': true
+    'expect': true,
+    'getDataSource': true,
+    'should': true,
+    'assert': true,
+    'getSchema': true,
+    'getSettings': true
   }
 };
