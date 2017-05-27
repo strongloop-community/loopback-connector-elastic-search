@@ -310,6 +310,133 @@ describe('Connector', function () {
 		done();
 	});
 
+
+	it('should build a nested "and" and "or" query for the WHERE filter', function (done) {
+		var criteria, size, offset, modelName, modelIdName;
+		criteria = {
+			where: {
+				and: [
+					{ or: [{id: {inq:[3,4,5] }}, { vip: true }] },
+					{ role: 'lead' }
+				]
+			}
+		};
+		size = 100;
+		offset = 10;
+		modelName = 'MockLoopbackModel';
+		modelIdName = 'id';
+
+		var filterCriteria = testConnector.buildFilter(modelName, modelIdName, criteria, size, offset);
+		expect(filterCriteria).not.to.be.null;
+		expect(filterCriteria).to.have.property('index').that.is.a('string');
+		expect(filterCriteria).to.have.property('type').that.is.a('string').that.equals(modelName);
+		expect(filterCriteria).to.have.property('body')
+			.that.is.an('object')
+			.that.deep.equals({ // a. this is really 2 tests in one
+			sort: [
+				// b. `_uid` is an auto-generated field that ElasticSearch populates for us
+				// when we want to let the backend/system/ES take care of id population
+				// so if we want to sort by id, without specifying/controlling our own id field,
+				// then ofcourse the sort must happen on `_uid`, this part of the test, validates that!
+				'_uid'
+			],
+			query: {
+				bool: {
+					must: [
+						{
+							bool: {
+								should: [
+									{
+										terms: {
+											_id: [
+												3,
+												4,
+												5
+											]
+										}
+									},
+									{
+										match: {
+											vip: true
+										}
+									}
+								]
+							}
+						},
+						{
+							match: {
+								role: 'lead'
+							}
+						}
+					]
+				}
+			}
+		});
+		expect(filterCriteria).to.have.property('size')
+			.that.is.a('number');
+		expect(filterCriteria).to.have.property('from')
+			.that.is.a('number');
+
+		done();
+	});
+
+	it('should build a  "match_phrase" query for the WHERE filter', function (done) {
+		var criteria, size, offset, modelName, modelIdName;
+		criteria = {
+			where: {
+				match_phrase: {
+					message : "best wishes" 
+				},
+				role: 'lead' 
+			}
+		};
+		size = 100;
+		offset = 10;
+		modelName = 'MockLoopbackModel';
+		modelIdName = 'id';
+
+		var filterCriteria = testConnector.buildFilter(modelName, modelIdName, criteria, size, offset);
+		expect(filterCriteria).not.to.be.null;
+		expect(filterCriteria).to.have.property('index').that.is.a('string');
+		expect(filterCriteria).to.have.property('type').that.is.a('string').that.equals(modelName);
+		expect(filterCriteria).to.have.property('body')
+			.that.is.an('object')
+			.that.deep.equals({ // a. this is really 2 tests in one
+			sort: [
+				// b. `_uid` is an auto-generated field that ElasticSearch populates for us
+				// when we want to let the backend/system/ES take care of id population
+				// so if we want to sort by id, without specifying/controlling our own id field,
+				// then ofcourse the sort must happen on `_uid`, this part of the test, validates that!
+				'_uid'
+			],
+			query: {
+				bool: {
+					must: [
+						{
+							match: {
+								message: {
+									query: "best wishes",
+									type: "phrase"
+								}
+							}
+						},
+						{
+							match: {
+								role: 'lead'
+							}
+						}
+					]
+				}
+			}
+		});
+		expect(filterCriteria).to.have.property('size')
+			.that.is.a('number');
+		expect(filterCriteria).to.have.property('from')
+			.that.is.a('number');
+
+		done();
+	});
+
 	it('should build a "nin" query for the WHERE filter', function (done) {
 		var criteria, size, offset, modelName, modelIdName;
 		criteria = {
