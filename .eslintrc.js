@@ -1,5 +1,8 @@
 module.exports = {
   'extends': 'eslint:recommended'
+  ,'rules': {
+    'indent': ['error', 2]
+  }
   ,'env': {
     'mocha': true
     ,'node': true

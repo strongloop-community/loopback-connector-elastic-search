@@ -1,3 +1,7 @@
+### v1.4.0 - Apr 23, 2017
+- contributed by @wolfgang-s
+  - add support for ES 5.x (PR #87 and PR #89)
+
 ### v1.3.5 - March 7, 2017
 - Fixed Issue - Remove refresh option for unsupported methods
   - This issue was fixed in PR #86

@@ -1,0 +1,63 @@
+{
+  "name": "esv5-plain",
+  "connector": "elasticsearch",
+  "index": "shakespeare",
+  "hosts": [
+    {
+      "protocol": "http",
+      "host": "localhost",
+      "port": 9203
+    }
+  ],
+  "apiVersion": "5.0",
+  "log": "error",
+  "defaultSize": 50,
+  "requestTimeout": 30000,
+  "mappings": [
+    {
+      "name": "User",
+      "properties": {
+        "id": {"type": "keyword"},
+        "seq": {"type": "integer"},
+        "name" : {
+          "type" : "keyword",
+          "fields" : {
+            "native" : {"type" : "keyword"}
+          }
+        },
+        "email": {"type": "keyword"},
+        "birthday": {"type": "date"},
+        "role": {"type": "keyword"},
+        "order": {"type": "integer"},
+        "vip": {"type": "boolean"}
+      }
+    },
+    {
+      "name": "Customer",
+      "index": "juju",
+      "type": "consumer",
+      "properties": {
+        "objectId": {"type": "keyword"},
+        "name" : {
+          "type" : "keyword",
+          "fields" : {
+            "native" : {"type" : "keyword"}
+          }
+        },
+        "email": {"type": "keyword"},
+        "birthday": {"type": "date"},
+        "role": {"type": "keyword"},
+        "order": {"type": "integer"},
+        "vip": {"type": "boolean"}
+      }
+    },
+    {
+      "name": "AccessToken",
+      "properties": {
+        "id": { "type": "keyword" },
+        "ttl": { "type": "integer" },
+        "created": { "type": "date" }
+      }
+    }
+  ]
+}

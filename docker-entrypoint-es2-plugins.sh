@@ -14,4 +14,8 @@ plugin install mobz/elasticsearch-head
 plugin install polyfractal/elasticsearch-inquisitor
 
 #exec /docker-entrypoint.sh elasticsearch
-exec elasticsearch -Des.insecure.allow.root=true
+exec elasticsearch -Des.insecure.allow.root=true \
+  --script.inline=true  \
+  --script.indexed=true \
+  --script.engine.groovy.inline.search=on \
+  --script.engine.groovy.inline.update=on

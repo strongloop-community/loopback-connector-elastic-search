@@ -1,0 +1,22 @@
+## Version Selection for compose file
+# https://docs.docker.com/compose/compose-file/#/versioning
+version: '2'
+services:
+  es_v1:
+    image: elasticsearch:1
+    ports:
+     - "9201:9200"
+    volumes:
+     - .:/apps
+    entrypoint: /apps/docker-entrypoint-es1-plugins.sh
+  es_v2:
+    image: elasticsearch:2
+    ports:
+     - "9202:9200"
+    volumes:
+     - .:/apps
+    entrypoint: /apps/docker-entrypoint-es2-plugins.sh
+  es_v5:
+    image: elasticsearch:5
+    ports:
+     - "9203:9200"

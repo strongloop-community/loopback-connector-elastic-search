@@ -2,10 +2,6 @@
 # https://docs.docker.com/compose/compose-file/#/versioning
 version: '2'
 services:
-  es_v1:
-    image: elasticsearch:1
-    ports:
-     - "9201:9200"
   es_v2:
     image: elasticsearch:2
     ports:

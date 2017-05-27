@@ -1,16 +1,16 @@
 {
-    "name": "esv1-plain",
+    "name": "esv2-plain",
     "connector": "elasticsearch",
     "index": "shakespeare",
     "hosts": [
         {
             "protocol": "http",
             "host": "localhost",
-            "port": 9201
+            "port": 9202
         }
     ],
-    "apiVersion": "1.7",
-    "log": "trace",
+    "apiVersion": "2.3",
+    "log": "error",
     "defaultSize": 50,
     "requestTimeout": 30000,
     "mappings": [

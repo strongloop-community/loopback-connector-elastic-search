@@ -1,12 +1,15 @@
 {
-  "name": "@ahsanayaz/loopback-connector-es",
-  "version": "1.3.7",
+  "name": "loopback-connector-es",
+  "version": "1.3.5",
   "description": "Connect LoopBack to Elasticsearch engine",
   "main": "index.js",
   "scripts": {
     "eslint": "eslint",
     "pretest": "eslint **/*.js",
-    "test": "mocha"
+    "test": "mocha --recursive",
+    "testv1": "mocha test/es-v1/**/*.js",
+    "testv2": "mocha test/es-v2/**/*.js",
+    "testv5": "mocha test/es-v5/**/*.js"
   },
   "keywords": [
     "loopback",
@@ -28,6 +31,9 @@
     {
       "name": "Aquid Shahwar",
       "email": "aquid.shahwar@gmail.com"
+    },
+    {
+      "name": "wolfgang-s"
     }
   ],
   "readmeFilename": "README.md",
@@ -47,8 +53,8 @@
     "async": "^0.9.0",
     "bluebird": "^2.9.14",
     "debug": "^2.1.3",
-    "elastic-deletebyquery": "1.0.7",
-    "elasticsearch": "^11.0.1",
+    "elastic-deletebyquery": "1.0.8",
+    "elasticsearch": "^12.1.3",
     "lodash": "^3.5.0",
     "loopback-connector": "^1.1.1"
   },

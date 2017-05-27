@@ -5,15 +5,15 @@ describe('Add Defaults', function () {
 
     before(function (done) {
         require('./init.js');
+
         var settings = getSettings();
         settings.log = 'error';
         db = getDataSource(settings);
-        db2 = getDataSource({
-            "name": "esv2-plain",
-            "connector": "elasticsearch",
-            "apiVersion": "2.3",
-            "refreshOn": ["save", "updateAttributes"]
-        });
+
+        var settings2 = getSettings();
+        settings2.refreshOn = ["save", "updateAttributes"];
+        db2 = getDataSource(settings2);
+
         var account = {real_name: {type: String, index: true, sort: true}};
         db2.define("Account", account);
         db.define("Account", account);

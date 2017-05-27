@@ -1,5 +1,6 @@
 require('./init.js');
 var async = require('async');
+var logger = require('debug')('test:es-v2:02.basic-querying.test.js');
 var db, User, Customer, AccessToken, Post, PostWithId, Category, SubCategory;
 
 /*eslint no-console: "off"*/
@@ -71,7 +72,7 @@ describe('basic-querying', function () {
 		});
 
 		PostWithId = db.define('PostWithId', {
-			id: {type: String, id: true},
+			id: {type: String},
 			title: {type: String, length: 255},
 			content: {type: String}
 		});
@@ -126,7 +127,7 @@ describe('basic-querying', function () {
 				Customer.findById('aaa', function (err, customer) {
 					should.exist(customer);
 					should.not.exist(err);
-					console.log(customer);
+					logger(customer);
 					done();
 				});
 			}, 2000);
@@ -191,8 +192,8 @@ describe('basic-querying', function () {
 				should.exist(u.id);
 				setTimeout(function () {
 					User.findById(u.id, function (err, u) {
-						console.log('err: ', err);
-						console.log('user: ', u);
+						logger('err: ', err);
+						logger('user: ', u);
 						should.exist(u);
 						should.not.exist(err);
 						u.should.be.an.instanceOf(User);
@@ -210,7 +211,7 @@ describe('basic-querying', function () {
 			User.all({
 				suggests: {
 					'title_suggester': {
-						text: 'd',
+						text: 'Stu',
 						term: {
 							field: 'name'
 						}
@@ -412,7 +413,7 @@ describe('basic-querying', function () {
 		it('should query filtered collection', function (done) {
 			setTimeout(function () {
 				User.find({where: {role: 'lead'}}, function (err, users) {
-					console.log('users',users);
+					logger('users',users);
 					should.exist(users);
 					should.not.exist(err);
 					users.should.have.lengthOf(2);
@@ -1039,7 +1040,7 @@ describe('basic-querying', function () {
 				var remaining = 0;
 
 				function sample(fields) {
-					console.log('expect: ', fields);
+					logger('expect: ', fields);
 					return {
 						expect: function (arr) {
 							remaining++;
@@ -1051,7 +1052,7 @@ describe('basic-querying', function () {
 								}
 
 								should.exist(users);
-								console.log(JSON.stringify(users, null, 2));
+								logger(JSON.stringify(users, null, 2));
 
 								if (remaining === 0) {
 									done();
@@ -1167,7 +1168,7 @@ describe('basic-querying', function () {
 
 		it('should work even when find by id', function (done) {
 			User.findOne(function (e, u) {
-				//console.log(JSON.stringify(u));
+				//logger(JSON.stringify(u));
 				// ESConnector.prototype.all +0ms model User filter {"where":{},"limit":1,"offset":0,"skip":0}
 				/*
 				 * Ideally, instead of always generating:
@@ -1260,7 +1261,7 @@ describe('basic-querying', function () {
 						User.find({where: {seq: 1}}, function (err, data) {
 							should.not.exist(err);
 							//data.length.should.equal(0);
-							console.log(data);
+							logger(data);
 							data[0].rating.should.equal(beatle.rating);
 							done();
 						});
@@ -1321,7 +1322,7 @@ describe('basic-querying', function () {
 						updatedUser.newField.should.equal(updateAttrs.newField);
 						setTimeout(function () {
 							User.findById(1, function (err, userFetchedAgain) {
-								console.log('333');
+								logger('333');
 								should.not.exist(err);
 								should.exist(userFetchedAgain);
 								should.exist(userFetchedAgain.order);
@@ -1712,12 +1713,12 @@ describe('basic-querying', function () {
 
 	describe('updateAll', function () {
 		before(seed);
-		it('should update the documet', function (done) {
+		it('should update the document', function (done) {
 			this.timeout(6000);
 
 			var userToUpdate = { seq: 10, name: 'Aquid Shahwar', email: 'aquid@shoppinpal.com', role: 'lead',
 				birthday: new Date('1992-09-21'), order: 11, vip: true
-			}
+			};
 			User.create(userToUpdate, function (err, user) {
 				should.not.exist(err);
 				should.exist(user);
@@ -1746,18 +1747,18 @@ describe('basic-querying', function () {
 		it('should auto generate an id', function (done) {
 			this.timeout(8000);
 			Customer.create({name: 'George Harrison', vip: false}, function (err, u) {
-				console.log('user after create', u);
+				logger('user after create', u);
 				should.not.exist(err);
 				should.exist(u.id);
 				should.exist(u.objectId);
 				setTimeout(function () {
 					Customer.findById(u.objectId, function (err, u) {
-						console.log('customer after first findById', u);
+						logger('customer after first findById', u);
 						u.save(function (err, savedCustomer) {
-							console.log('user after save', savedCustomer);
+							logger('user after save', savedCustomer);
 							setTimeout(function () {
 								Customer.findById(u.objectId, function (err, foundUser) {
-									console.log('user after findById', foundUser);
+									logger('user after findById', foundUser);
 									done();
 								});
 							}, 2000);
@@ -1770,7 +1771,7 @@ describe('basic-querying', function () {
 
 });
 
-function seed(done) {
+function seed() {
 	this.timeout(4000);
 	var beatles = [
 		{
@@ -1797,14 +1798,9 @@ function seed(done) {
 		{seq: 5, name: 'Stuart Sutcliffe', order: 3, vip: true}
 	];
 
-	async.series([
-		User.destroyAll.bind(User),
-		function (cb) {
-			setTimeout(function () {
-				async.each(beatles, User.create.bind(User), cb);
-			}, 2000);
-		}
-	], done);
+	return User.destroyAll().then(function() {
+		return User.create(beatles);
+	});
 }
 
 function seedCustomers(done) {

@@ -1,0 +1,8 @@
+## Version Selection for compose file
+# https://docs.docker.com/compose/compose-file/#/versioning
+version: '2'
+services:
+  es_v5:
+    image: elasticsearch:5
+    ports:
+     - "9203:9200"

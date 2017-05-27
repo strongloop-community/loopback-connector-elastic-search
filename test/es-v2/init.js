@@ -15,9 +15,7 @@ global.should = chai.should(); // Why is the function being executed? Because th
 
 global._ = require('lodash'); /*global _:true*/
 
-var settings = require('./resource/datasource-test.json');
-// var settings = require('./resource/datasource-test-v1-plain.json');
-// var settings = require('./resource/datasource-test-v2-plain.json');
+var settings = require('./datasource-test-v2-plain.json');
 global.getSettings = function() { /*global getSettings*/
     return _.cloneDeep(settings);
 };
@@ -28,7 +26,12 @@ global.getDataSource = global.getSchema = global.getConnector = function (custom
         ? console.log('\n\tcustomSettings will override global settings for datasource\n'/*, JSON.stringify(customSettings,null,2)*/)
         : console.log('\n\twill use global settings for datasource\n');
     var settings = customSettings || getSettings();
+    // settings.log = {
+    //   type: 'file',
+    //   level: 'trace',
+    //   path: 'test/es-v2/elasticsearch-v2-'+Date.now()+'.log'
+    // };
     //console.log('\n\tsettings:\n', JSON.stringify(settings,null,2));
-    settings.connector =  require('../');
+    settings.connector =  require('../../');
     return new DataSource(settings);
 };
