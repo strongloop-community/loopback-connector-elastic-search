@@ -1,4 +1,7 @@
 .idea
+.DS_Store
+
 node_modules
+
 examples/db.json
 test/**/*.log

@@ -1,5 +1,6 @@
 require('./init.js');
 var async = require('async');
+var Promise = require('bluebird');
 var logger = require('debug')('test:es-v5:02.basic-querying.test.js');
 var db, User, Customer, AccessToken, Post, PostWithId, Category, SubCategory;
 
@@ -284,13 +285,12 @@ describe('basic-querying', function () {
             // TODO: Resolve the discussion around: https://support.strongloop.com/requests/676
             /**
              * 1) find() by default sorts by id property.
-             * 2) findByIds() expects the results sorted by the ids as they are passed in the argument.
-             *    i) Connector.prototype.all() should NOT deal with the rules for findByIds()
-             *       as the sorting for findByIds() is done after the connector returned an array of objects.
-             *    ii) Here is how findByIds() implemented:
-             *        i) Build a query with inq for ids from the arg
-             *        ii) Call Model.find() (no ordering is set, connectors will default it to id)
-             *        iii) Sort the results by the order of ids in the arg
+             * 2) findByIds() expects the results sorted by the ids as they are passed in the
+             * argument. i) Connector.prototype.all() should NOT deal with the rules for
+             * findByIds() as the sorting for findByIds() is done after the connector returned an
+             * array of objects. ii) Here is how findByIds() implemented: i) Build a query with inq
+             * for ids from the arg ii) Call Model.find() (no ordering is set, connectors will
+             * default it to id) iii) Sort the results by the order of ids in the arg
              *
              */
             /*names.should.eql( // NOTE: order doesn't add up, is 2.ii.iii broken?
@@ -1742,6 +1742,182 @@ describe('basic-querying', function () {
 
   });
 
+  describe('bulk API operations', function(){
+
+    var items = getNewPosts();
+
+    beforeEach(function (done) {
+      this.timeout = 4000;
+      Post.destroyAll(done);
+    });
+
+
+    it('should add some posts at once, using bulkCreate', function(done){
+
+      Post
+        .bulkCreate(items)
+        // NOTE: next step is just a delay, which seems to be required due to a race condition
+        // between bulk operation and find by ID. In result, the following posts array contains
+        // `null` as first item, instead of items[0] from above.
+        .then(delaying)
+        .then(function(ids){
+          ids.should.have.lengthOf(items.length);
+          var gettingPosts = ids.map(function(id){
+            id.should.be.a('string');
+            return Post.findById(id);
+          });
+          return Promise.all(gettingPosts);
+        })
+        .then(function(posts){
+          posts.forEach(function (post, i){
+            post.should.be.an.instanceOf(Post);
+
+            // NOTE: requires because, connector returns arrays as Lists when being a property value
+            post = JSON.parse(JSON.stringify(post));
+            Object.keys(items[i]).forEach(function(fieldName){
+              post.should.have.property(fieldName);
+              post[fieldName].should.deep.equal(items[i][fieldName]);
+            });
+          });
+          done();
+        })
+        .catch(done);
+    });
+
+
+    it('should update some posts at once, using bulkUpdate', function(done){
+
+          var updates = [
+            {
+              title: 'new 7th title'
+            },
+            {
+              comments: [ 'poiuytr' ]
+            },
+            {
+              comments : null
+            }
+          ];
+
+          Post
+            .bulkCreate(items)
+            .then(delaying)   // NOTE: see bulkCreate test
+            .then(function(ids){
+              var gettingPosts = ids.map(function(id){
+                return Post.findById(id);
+              });
+              return Promise.all(gettingPosts);
+            })
+            .then(function(posts){
+              var results = posts.reduce(function (results, post, i){
+                var bulk = results[0];
+                var ids = results[1];
+
+                var idName = Post.definition.idName();
+                var update = {};
+                update[idName] = post[idName];
+
+                bulk.push(Object.assign({}, updates[i], update));
+                ids.push(post[idName]);
+
+                return [ bulk, ids ];
+              }, [ [/* bulk */], [/* ids */] ]);
+
+              var bulk = results[0];
+              var ids = results[1];
+              return Promise.all([
+                Post.bulkUpdate(bulk),
+                Promise.resolve(ids)
+              ]);
+            })
+            .then(delaying)   // NOTE: see bulkCreate test
+            .then(function(results){
+              var affected = results[0];
+              affected.should.be.equal(updates.length);
+
+              var ids = results[1];
+
+              var gettingPosts = ids.map(function(id){
+                return Post.findById(id);
+              });
+              return Promise.all(gettingPosts);
+            })
+            .then(function(posts){
+              posts.forEach(function (post, i){
+
+                // NOTE: requires because, connector returns arrays as Lists when being a property value
+                post = JSON.parse(JSON.stringify(post));
+                Object.keys(updates[i]).forEach(function(fieldName){
+                  post.should.have.property(fieldName);
+                  expect(post[fieldName]).to.deep.equal(updates[i][fieldName]);
+                });
+              });
+              done();
+            })
+            .catch(done);
+        });
+
+
+    it('should remove 2 posts at once, using bulkDestroy', function(done){
+
+          Post
+            .bulkCreate(items)
+            .then(delaying)   // NOTE: see bulkCreate test
+            .then(function(ids){
+              return Post.find({limit: 2});
+            })
+            .then(function(posts){
+              var idName = Post.definition.idName();
+              var ids = posts.map(function(post){
+                return post[idName];
+              });
+
+              var nonExistingPost = {};
+              nonExistingPost[idName] = 'some ID that hopefully does not exist';
+
+              posts.push(nonExistingPost);
+              ids.push(null);
+
+              return Promise.all([
+                Post.bulkDestroy(posts),
+                Promise.resolve(ids)
+              ]);
+            })
+            .then(delaying)   // NOTE: see bulkCreate test
+            .then(function(results){
+              var report = results[0];
+              var ids = results[1];
+              var checking = ids.map(function(id){
+                if(id === null || typeof id === 'undefined'){
+                  return Promise.resolve(false);
+                }
+                return Post.findById(id).then(function(post){
+                  return Promise.resolve(post === null);
+                }, function(err){
+                  return Promise.resolve(id);
+                });
+              });
+
+              return Promise.all([
+                Promise.all(checking),
+                Promise.resolve(report)
+              ]);
+            })
+            .then(function(results){
+              var checks = results[0];
+              var report = results[1];
+
+              report.forEach(function(action, i){
+                expect(action).to.be.equal(checks[i]);
+              });
+
+              done();
+            })
+            .catch(done);
+        });
+
+  });
+
   xdescribe('test id fallback when `generated:false`', function () {
 
     it('should auto generate an id', function (done) {
@@ -1840,6 +2016,26 @@ function seedCustomers(done) {
   ], done);
 }
 
+function getNewPosts() {
+  var items = [
+    {
+      title: 'title 1st',
+      content: 'some fancy content'
+    },
+    {
+      title: 'title 2nd',
+      content: 'give me more, more content'
+    },
+    {
+      title: 'title 3rd',
+      content: 'there is no content. please move on',
+      comments: [ 'qwertyid1', 'asdfghid2' ]
+    }
+  ];
+
+  return items;
+}
+
 function destroyAccessTokens(done) {
   this.timeout(4000);
   AccessToken.destroyAll.bind(AccessToken);
@@ -1854,5 +2050,13 @@ function destroyPosts(done) {
   PostWithId.destroyAll.bind(PostWithId);
   setTimeout(function () {
     done();
-  }, 2000)
+  }, 2000);
+}
+
+function delaying(){
+  var self = this;
+  var args = arguments;
+  return new Promise(function(__ful, rej__){
+    setTimeout(function(){ __ful.apply(self, args); }, 1000);
+  });
 }

@@ -70,6 +70,7 @@
     "grunt-mocha-test": "^0.12.1",
     "loopback-datasource-juggler": "^2.21.0",
     "mocha": "^1.21.4",
-    "should": "^5.2.0"
+    "should": "^5.2.0",
+    "bluebird": "^2.9.14"
   }
 }
