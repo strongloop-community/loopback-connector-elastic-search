@@ -1,6 +1,7 @@
 {
   "name": "esv6-plain",
   "connector": "elasticsearch",
+  "index": "shakespeare",
   "hosts": [
     {
       "protocol": "http",
