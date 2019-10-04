@@ -1,21 +1,21 @@
 {
-  "name": "loopback-connector-es",
-  "version": "1.4.1",
-  "description": "Connect LoopBack to Elasticsearch engine",
+  "name": "loopback-connector-esv6",
+  "version": "1.3.2",
+  "description": "LoopBack Connector for Elasticsearch 6.x",
   "main": "index.js",
   "scripts": {
     "eslint": "eslint",
     "pretest": "eslint **/*.js",
     "test": "mocha --recursive",
-    "testv1": "mocha test/es-v1/**/*.js",
-    "testv2": "mocha test/es-v2/**/*.js",
-    "testv5": "mocha test/es-v5/**/*.js"
+    "testv6": "mocha test/es-v6/**/*.js"
   },
   "keywords": [
     "loopback",
     "elastic",
     "elasticsearch",
+    "elasticsearchv6",
     "es",
+    "esv6",
     "loopback-connector",
     "connector"
   ],
@@ -34,6 +34,10 @@
     },
     {
       "name": "wolfgang-s"
+    },
+    {
+      "name": "Bharath Reddy Kontham",
+      "email": "bharath2211@gmail.com"
     }
   ],
   "readmeFilename": "README.md",
@@ -50,13 +54,12 @@
   },
   "homepage": "https://github.com/strongloop-community/loopback-connector-elastic-search",
   "dependencies": {
-    "async": "^0.9.0",
-    "bluebird": "^2.9.14",
-    "debug": "^2.1.3",
-    "elastic-deletebyquery": "1.0.8",
-    "elasticsearch": "^12.1.3",
-    "lodash": "^3.5.0",
-    "loopback-connector": "^1.1.1"
+    "async": "2.6.1",
+    "bluebird": "2.11.0",
+    "debug": "3.2.6",
+    "elasticsearch": "15.2.0",
+    "lodash": "4.17.11",
+    "loopback-connector": "4.5.1"
   },
   "directories": {
     "example": "examples",
@@ -68,7 +71,7 @@
     "eslint-config-loopback": "4.0.0",
     "grunt": "^0.4.5",
     "grunt-mocha-test": "^0.12.1",
-    "loopback-datasource-juggler": "^2.21.0",
+    "loopback-datasource-juggler": "^2.55.3",
     "mocha": "^1.21.4",
     "should": "^5.2.0"
   }

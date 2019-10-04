@@ -1,0 +1,56 @@
+{
+  "name": "esv6-plain",
+  "connector": "elasticsearch",
+  "index": "shakespeare",
+  "hosts": [{
+    "protocol": "http",
+    "host": "localhost",
+    "port": 9200
+  }],
+  "apiVersion": "6.0",
+  "log": "error",
+  "defaultSize": 50,
+  "requestTimeout": 30000,
+  "mappingType": "basedata",
+  "mappingProperties": {
+    "id": {
+      "type": "keyword"
+    },
+    "seq": {
+      "type": "integer"
+    },
+    "name": {
+      "type": "keyword",
+      "fields": {
+        "native": {
+          "type": "keyword"
+        }
+      }
+    },
+    "email": {
+      "type": "keyword"
+    },
+    "birthday": {
+      "type": "date"
+    },
+    "role": {
+      "type": "keyword"
+    },
+    "order": {
+      "type": "integer"
+    },
+    "vip": {
+      "type": "boolean"
+    },
+    "objectId": {
+      "type": "keyword"
+    },
+    "ttl": {
+      "type": "integer"
+    },
+    "created": {
+      "type": "date"
+    }
+  },
+  "mappings": []
+}
