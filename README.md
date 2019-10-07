@@ -22,7 +22,7 @@ Elasticsearch(versions 6.x and 7.x) datasource connector for [Loopback 3.x](http
 ## Overview
 
 1. `lib` directory has the entire source code for this connector
-    1. this is what gets downloaded to your `node_modules` folder when you run `npm install loopback-connector-es --save --save-exact`
+    1. this is what gets downloaded to your `node_modules` folder when you run `npm install loopback-connector-esv6 --save --save-exact`
 1. `examples` directory has a loopback app which uses this connector
     1. this is not published to NPM, it is only here for demo purposes
         1. it will not be downloaded to your `node_modules` folder!
