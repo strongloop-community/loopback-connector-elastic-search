@@ -1,56 +1,64 @@
 {
-  "name": "esv6-plain",
-  "connector": "elasticsearch",
-  "index": "shakespeare",
-  "hosts": [{
-    "protocol": "http",
-    "host": "localhost",
-    "port": 9200
-  }],
-  "apiVersion": "6.0",
-  "log": "error",
+  "name": "elasticsearch-example-index-datasource",
+  "connector": "esv6",
+  "version": 6,
+  "index": "example-index",
+  "configuration": {
+    "node": "http://localhost:9200",
+    "requestTimeout": 30000,
+    "pingTimeout": 3000
+  },
   "defaultSize": 50,
-  "requestTimeout": 30000,
+  "indexSettings": {},
   "mappingType": "basedata",
   "mappingProperties": {
+    "docType": {
+      "type": "keyword",
+      "index": true
+    },
     "id": {
-      "type": "keyword"
+      "type": "keyword",
+      "index": true
     },
     "seq": {
-      "type": "integer"
+      "type": "integer",
+      "index": true
     },
     "name": {
       "type": "keyword",
-      "fields": {
-        "native": {
-          "type": "keyword"
-        }
-      }
+      "index": true
     },
     "email": {
-      "type": "keyword"
+      "type": "keyword",
+      "index": true
     },
     "birthday": {
-      "type": "date"
+      "type": "date",
+      "index": true
     },
     "role": {
-      "type": "keyword"
+      "type": "keyword",
+      "index": true
     },
     "order": {
-      "type": "integer"
+      "type": "integer",
+      "index": true
     },
     "vip": {
-      "type": "boolean"
+      "type": "boolean",
+      "index": true
     },
     "objectId": {
-      "type": "keyword"
+      "type": "keyword",
+      "index": true
     },
     "ttl": {
-      "type": "integer"
+      "type": "integer",
+      "index": true
     },
     "created": {
-      "type": "date"
+      "type": "date",
+      "index": true
     }
-  },
-  "mappings": []
+  }
 }

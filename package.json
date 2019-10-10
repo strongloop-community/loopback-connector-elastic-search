@@ -63,7 +63,8 @@
     "es6": "npm:@elastic/elasticsearch@6",
     "es7": "npm:@elastic/elasticsearch@7",
     "lodash": "4.17.11",
-    "loopback-connector": "4.9.0"
+    "loopback-connector": "4.9.0",
+    "ramda": "^0.26.1"
   },
   "directories": {
     "example": "examples",
