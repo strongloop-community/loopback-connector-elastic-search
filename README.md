@@ -26,7 +26,7 @@ Elasticsearch(versions 6.x and 7.x) datasource connector for [Loopback 3.x](http
 1. `examples` directory has a loopback app which uses this connector
     1. this is not published to NPM, it is only here for demo purposes
         1. it will not be downloaded to your `node_modules` folder!
-        1. similarly the `examples/server/datasources.json` and `examples/server/datasources.<env>.js` files are there for this demo app to use
+        1. similarly the `examples/server/datasources.json` file is there for this demo app to use
         1. you can copy their content over to `<yourApp>/server/datasources.json` or `<yourApp>/server/datasources.<env>.js` if you want and edit it there but don't start editing the files inside `examples/server` itself and expect changes to take place in your app!
 1. `test` directory has unit tests
     1. it does not reuse the loopback app from the `examples` folder
@@ -49,35 +49,26 @@ npm install loopback-connector-esv6 --save --save-exact
 
 ## Configuring connector
 
+### Important Note
+
+- **This connector will only connect to one index per datasource.**
+- This package is created to support ElasticSearch v6.x and 7.x only.
+- `docType` property is automatically added in mapping properties which is required to differentiate documents stored in index with loopback model data. It stores loopback modelName value. `docType: { type: "keyword", index: true }`
+
 ### Required
 
-- **host:** Elasticsearch engine host address.
-- **port:** Elasticsearch engine port.
-- **name:** Connector name.
-- **connector:** Elasticsearch driver.
-- **index:** Search engine specific index. defaults to `shakespeare`. (mandatory)
-- **apiVersion:** specify the major version of the Elasticsearch nodes you will be connecting to.
-
-### Recommended
-
-- **mappingType:** mapping type for provided index. defaults to `basedata`
-- **mappingProperties:** An object with properties for above mentioned **mappingType**
-
-#### Important Note
-
-- This package is created to support ElasticSearch v6.x only.
-- `docType` property is automatically added in mapping properties which is required to differentiate documents stored in index with loopback model data. It stores loopback modelName value. `docType: { type: "keyword", index: true }`
+- **name:** name of the connector.
+- **connector:** Elasticsearch driver **'esv6'**.
+- **configuration:** Elasticsearch client configuraiton object which includes nodes, authetication and ssl coonfiguration. Please refer this [official link](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/client-configuration.html) for more information on configuraiton.
+- **index:** Name of the ElasticSearch index `eg: shakespeare`.
+- **version:** specify the major version of the Elasticsearch nodes you will be connecting to. Supported versions: [6, 7] `eg: version: 7`
+- **mappingType:** mapping type for provided index. defaults to `basedata`. Required only for version: 6
+- **mappingProperties:** An object with properties for above mentioned `mappingType`
 
 ### Optional
 
-- **log:** sets elasticsearch client's logging, you can refer to the docs [here](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/configuration.html#config-log)
-- **defaultSize:** total number of results to return per page.
-- **refreshOn** optional array with method names you want to set refresh option as true
-- **requestTimeout:** this value is in milliseconds
-- **ssl:** useful for setting up a secure channel
-- **protocol:** can be `http` or `https` (`http` is the default if none specified) ... *must* be `https` if you're using `ssl`
-- **auth**: useful if you have access control setup via services like `es-jetty` or `found` or `shield`
-- **amazonES**: configuration for `http-aws-es` NOTE: The package needs to be installed in your project. Its not part of this Connector. Version 1.x.x (currently 1.1.3) will have to be used, later versions will not pass through aws configuration.
+- **indexSettings:** optional settings object for creating index.
+- **defaultSize:** Search size limit. Default is 50.
 
 ### Sample
 
@@ -85,167 +76,99 @@ npm install loopback-connector-esv6 --save --save-exact
 
 ```javascript
 
-  "db": {
-    "connector": "es",
-    "name": "my-es",
-    "index": "indexName", // name of the elastic index
-    "hosts": [
-      {
-        "protocol": "http",
-        "host": "127.0.0.1",
-        "port": 9200,
-        "auth": "username:password"
-      }
-    ],
-    "apiVersion": "6.0",
-    "refreshOn": ["save","create", "updateOrCreate"],
-    "log": "trace",
-    "defaultSize": "1000", // Default number of records to fetch for search
+  "elastic-search-ssl": {
+  "name": "elasticsearch-example-index-datasource",
+  "connector": "esv6",
+  "version": 7,
+  "index": "example-index",
+  "configuration": { // Elastic client configuration
+    "node": "http://localhost:9200",
     "requestTimeout": 30000,
+    "pingTimeout": 3000,
+    "auth": {
+      "username": "test",
+      "password": "test"
+    },
     "ssl": {
-      "ca": "./cacert.pem",
       "rejectUnauthorized": true
+    }
+  },
+  "defaultSize": 50,
+  "indexSettings": { // Elastic index settings
+    "number_of_shards": 2,
+    "number_of_replicas": 1
+  },
+  "mappingType": "basedata", // not required for verison: 7, will be ignored
+  "mappingProperties": {
+    "docType": {
+      "type": "keyword",
+      "index": true
     },
-    "amazonES": {
-      "region": "us-east-1",
-      "accessKey": "AKID",
-      "secretKey": "secret"
+    "id": {
+      "type": "keyword",
+      "index": true
     },
-    "mappingType": "basedata", // NOT required for elasticsearch version >=7
-    "mappingProperties": {
-      "id": {
-        "type": "keyword",
-        "index": true
-      },
-      "docType": {
-        "type": "keyword",
-        "index": true
-      },
-      "name": {
-        "type": "text",
-        "index": true
-      },
-      "realm": {
-        "type": "keyword",
-        "index": true
-      },
-      "username": {
-        "type": "keyword",
-        "index": true
-      },
-      "description": {
-        "type": "text",
-        "index": true
-      },
-      "roleId": {
-        "type": "keyword",
-        "index": true
-      }
+    "seq": {
+      "type": "integer",
+      "index": true
     },
-    "settings": {} // Elastic index settings
+    "name": {
+      "type": "keyword",
+      "index": true
+    },
+    "email": {
+      "type": "keyword",
+      "index": true
+    },
+    "birthday": {
+      "type": "date",
+      "index": true
+    },
+    "role": {
+      "type": "keyword",
+      "index": true
+    },
+    "order": {
+      "type": "integer",
+      "index": true
+    },
+    "vip": {
+      "type": "boolean",
+      "index": true
+    },
+    "objectId": {
+      "type": "keyword",
+      "index": true
+    },
+    "ttl": {
+      "type": "integer",
+      "index": true
+    },
+    "created": {
+      "type": "date",
+      "index": true
+    }
   }
+}
 ```
 
-2.You can peek at `/examples/server/datasources.sample-es-6.json` for more hints.
+2.You can peek at `/examples/server/datasources.json` for more hints.
 
 ## About the example app
 
 1. The `examples` directory contains a loopback app which uses this connector.
 1. You can point this example at your own elasticsearch instance or use the quick instances provided via docker.
 
-### Run both example and ES in docker
-
-As a developer, you may want a short lived ES instance that is easy to tear down when you're finished dev testing. We recommend docker to facilitate this.
-
-**Pre-requisites**
-You will need [docker-engine](https://docs.docker.com/engine/installation/) and [docker-compose](https://docs.docker.com/compose/install/) installed on your system.
-
-#### Step-1
-
-- Set desired versions for **node** and **Elasticsearch**
-  - here are the [valid values](https://hub.docker.com/r/library/node/tags/) to use for  **Node**
-  - here are the [valid values](https://hub.docker.com/r/library/elasticsearch/tags/) to use for  **Elasticsearch**
-
-```bash
-# combination of node v0.10.46 with elasticsearch v1
-export NODE_VERSION=0.10.46
-export ES_VERSION=1
-echo 'NODE_VERSION' $NODE_VERSION && echo 'ES_VERSION' $ES_VERSION
-
-# similarly feel free to try relevant combinations:
-## of node v0.10.46 with elasticsearch v2
-## of node v0.12 with elasticsearch v2
-## of node v0.4 with elasticsearch v2
-## of node v5 with elasticsearch v2
-## elasticsearch v5 will probably not work as there isn't an `elasticsearch` client for it, as of this writing
-## etc.
-```
-
-#### Step-2
-
-- Run the setup with `docker-compose` commands.
-
-```bash
-git clone https://github.com/strongloop-community/loopback-connector-elastic-search.git myEsConnector
-cd myEsConnector/examples
-npm install
-docker-compose up
-```
-
-#### Step-3
-
-- Visit `localhost:3000/explorer` and you will find our example loopback app running there.
-
-## How to achieve Instant search
-
-From version 1.3.4, `refresh` option is added which support's instant search after `create` and `update`. This option is configurable and one can activate or deactivate it according to their need. `By default refresh is true` which makes response to come only after documents are indexed(searchable).
-To know more about `refresh` go through this [article](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-refresh.html)
-
-- [Related Issue](https://github.com/strongloop-community/loopback-connector-elastic-search/issues/72)
-- [Related PR](https://github.com/strongloop-community/loopback-connector-elastic-search/pull/81)
-
-### Ways to configure refresh
-
-**Datasource File:** Pass `refreshOn` array from datasource file including methods name in which you want this to be `true`
-
-```javascript
-    "es": {
-        "name": "es",
-        "refreshOn": ["save","create", "updateOrCreate"],
-        .....
-```
-
-**Model.json file:** Configurable on per model and operation level (`true`, `false`, `wait_for`)
-
-```javascript
-    "elasticsearch": {
-         "create": {
-             "refresh": false
-         },
-         "destroy": {
-             "refresh": false
-         },
-         "destroyAll": {
-             "refresh": "wait_for"
-         }
-    }
-```
-
-NOTE:- *While a refresh is useful, it still has a performance cost. A manual refresh can be useful, but avoid manual refresh every time you index a document in production; it will hurt your performance. Instead, your application needs to be aware of the near real-time nature of Elasticsearch and make allowances for it.*
-
 ## Troubleshooting
 
 1. Do you have both `elasticsearch-ssl` and `elasticsearch-plain` in your `datasources.json` file? You just need one of them (not both), based on how you've setup your ES instance.
 1. Did you forget to set `model-config.json` to point at the datasource you configured? Maybe you are using a different or misspelled name than what you thought you had!
-1. Did you forget to set a [valid value](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/configuration.html#config-api-version) for `apiVersion` field in `datasources.json` that matches the version of ES you are running?
-1. Maybe the version of ES you are using isn't supported by the client that this project uses. Try removing the `elasticsearch` sub-dependency from `<yourApp>/node_modules/loopback-connector-es/node_modules` folder and then install the latest client:
-    1. `cd <yourApp>/node_modules/loopback-connector-es/node_modules`
-    1. then remove the `elasticsearch` folder
-        1. unix/mac quickie: `rm -rf elasticsearch`
-    1. `npm install --save --save-exact https://github.com/elastic/elasticsearch-js.git`
-    1. to "academically" prove to yourself that this will work with the new install:
-        1. on unix/mac you can quickly dump the supported versions to your terminal with: `cat elasticsearch/package.json | grep -A 5 supported_es_branches`
-        2. on other platforms, look into the `elasticsearch/package.json` and search for the `supported_es_branches` json block.
+1. Make sure to configure major version of Elastic in `version`
+1. Maybe the version of ES you are using isn't supported by the client that this project uses. Try removing the `elasticsearch` sub-dependency from `<yourApp>/node_modules/loopback-connector-esv6/node_modules` folder and then install the latest client:
+    1. `cd <yourApp>/node_modules/loopback-connector-esv6/node_modules`
+    1. then remove `es6` && `es7` folder
+        1. unix/mac quickie: `rm -rf es6 es7`
+    1. `npm install`
     1. go back to yourApp's root directory
         1. unix/mac quickie: `cd <yourApp>`
     1. And test that you can now use the connector without any issues!
@@ -273,12 +196,9 @@ NOTE:- *While a refresh is useful, it still has a performance cost. A manual ref
 ## FAQs
 
 1. How do we enable or disable the logs coming from the underlying elasticsearch client? There may be a need to debug/troubleshoot at times.
-    1. Use the `"log": "trace"` field in your datasources file or omit it. You can refer to the detailed docs [here](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/configuration.html#config-log) and [here](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/logging.html)
+    1. Use the env variable `DEBUG=elasticsearch` for elastic client logs.
 1. How do we enable or disable the logs coming from this connector?
     1. By default if you do not set the following env variable, they are disabled: `DEBUG=loopback:connector:elasticsearch`
-        1. For example, try running tests with and without it, to see the difference:
-            1. with: `DEBUG=loopback:connector:elasticsearch npm test`
-            1. without: `npm test`
 1. What are the tests about? Can you provide a brief overview?
     1. Tests are prefixed with `01` or `02` etc. in order to run them in that order by leveraging default alphabetical sorting.
     1. The `02.basic-querying.test.js` file uses two models to test various CRUD operations that any connector must provide, like `find(), findById(), findByIds(), updateAttributes()` etc.

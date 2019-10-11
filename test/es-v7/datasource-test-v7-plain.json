@@ -1,7 +1,7 @@
 {
   "name": "elasticsearch-example-index-datasource",
   "connector": "esv6",
-  "version": 6,
+  "version": 7,
   "index": "example-index",
   "configuration": {
     "node": "http://localhost:9200",
