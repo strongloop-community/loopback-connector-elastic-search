@@ -1,6 +1,6 @@
 require('./init.js');
 var async = require('async');
-var logger = require('debug')('test:es-v5:02.basic-querying.test.js');
+var logger = require('debug')('test:es-v6:02.basic-querying.test.js');
 var db, User, Customer, AccessToken, Post, PostWithId, Category, SubCategory;
 
 /*eslint no-console: "off"*/

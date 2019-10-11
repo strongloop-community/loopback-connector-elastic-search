@@ -1,55 +1,146 @@
 {
   "db": {
     "name": "db",
-    "connector": "memory",
-    "file": "db.json"
+    "connector": "memory"
   },
   "elasticsearch-plain": {
     "name": "elasticsearch-plain",
-    "connector": "es",
-    "index": "shakespeare",
-    "hosts": [
-      {
-        "host": "hosted.foundcluster.com",
-        "port": 9243
-      }
-    ],
-    "apiVersion": "1.1",
-    "log": "trace",
+    "connector": "esv6",
+    "version": 6,
+    "index": "example-index",
+    "configuration": {
+      "node": "http://localhost:9200",
+      "requestTimeout": 30000,
+      "pingTimeout": 3000
+    },
     "defaultSize": 50,
-    "requestTimeout": 30000
+    "indexSettings": {
+      "number_of_shards": 2,
+      "number_of_replicas": 1
+    },
+    "mappingType": "basedata",
+    "mappingProperties": {
+      "docType": {
+        "type": "keyword",
+        "index": true
+      },
+      "id": {
+        "type": "keyword",
+        "index": true
+      },
+      "seq": {
+        "type": "integer",
+        "index": true
+      },
+      "name": {
+        "type": "keyword",
+        "index": true
+      },
+      "email": {
+        "type": "keyword",
+        "index": true
+      },
+      "birthday": {
+        "type": "date",
+        "index": true
+      },
+      "role": {
+        "type": "keyword",
+        "index": true
+      },
+      "order": {
+        "type": "integer",
+        "index": true
+      },
+      "vip": {
+        "type": "boolean",
+        "index": true
+      },
+      "objectId": {
+        "type": "keyword",
+        "index": true
+      },
+      "ttl": {
+        "type": "integer",
+        "index": true
+      },
+      "created": {
+        "type": "date",
+        "index": true
+      }
+    }
   },
   "elasticsearch-ssl": {
     "name": "elasticsearch-ssl",
-    "connector": "es",
-    "index": "shakespeare",
-    "hosts": [
-      {
-        "protocol": "https",
-        "host": "hosted.foundcluster.com",
-        "port": 9243,
-        "auth": "username:password"
+    "connector": "esv6",
+    "version": 7,
+    "index": "example-index",
+    "configuration": {
+      "node": "https://localhost:9200",
+      "requestTimeout": 30000,
+      "pingTimeout": 3000,
+      "auth": {
+        "username": "test",
+        "password": "test"
+      },
+      "ssl": {
+        "rejectUnauthorized": true
       }
-    ],
-    "apiVersion": "1.1",
-    "log": "trace",
-    "defaultSize": 50,
-    "requestTimeout": 30000,
-    "ssl": {
-      "ca": "./../cacert.pem",
-      "rejectUnauthorized": true
     },
-    "mappings": [
-      {
-        "name": "UserModel",
-        "properties": {
-          "id": {"type": "string", "index" : "not_analyzed" },
-          "realm": {"type": "string", "index" : "not_analyzed" },
-          "username": {"type": "string", "index" : "not_analyzed" },
-          "password": {"type": "string", "index" : "not_analyzed" },
-          "email": {"type": "string", "index" : "not_analyzed" }
-        }
+    "defaultSize": 50,
+    "indexSettings": {
+      "number_of_shards": 2,
+      "number_of_replicas": 1
+    },
+    "mappingProperties": {
+      "docType": {
+        "type": "keyword",
+        "index": true
+      },
+      "id": {
+        "type": "keyword",
+        "index": true
+      },
+      "seq": {
+        "type": "integer",
+        "index": true
+      },
+      "name": {
+        "type": "keyword",
+        "index": true
+      },
+      "email": {
+        "type": "keyword",
+        "index": true
+      },
+      "birthday": {
+        "type": "date",
+        "index": true
+      },
+      "role": {
+        "type": "keyword",
+        "index": true
+      },
+      "order": {
+        "type": "integer",
+        "index": true
+      },
+      "vip": {
+        "type": "boolean",
+        "index": true
+      },
+      "objectId": {
+        "type": "keyword",
+        "index": true
+      },
+      "ttl": {
+        "type": "integer",
+        "index": true
+      },
+      "created": {
+        "type": "date",
+        "index": true
       }
-    ]
+    }
   }
 }

@@ -1,0 +1,10 @@
+{
+  "loopback-component-explorer": {
+    "apiInfo": {
+      "title": "Elastic App APIs",
+      "description": "Explore Elastic App APIs"
+    },
+    "mountPath": "/api/explorer",
+    "generateOperationScopedModels": true
+  }
+}

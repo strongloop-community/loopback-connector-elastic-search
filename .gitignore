@@ -2,3 +2,4 @@
 node_modules
 examples/db.json
 test/**/*.log
+package-lock.json
