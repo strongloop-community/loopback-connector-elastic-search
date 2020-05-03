@@ -2,7 +2,11 @@
   "name": "UserModel",
   "base": "User",
   "idInjection": true,
-  "properties": {},
+  "properties": {
+    "_search_after": {
+      "type": ["any"]
+    }
+  },
   "validations": [],
   "relations": {
     "globalConfigModels": {
