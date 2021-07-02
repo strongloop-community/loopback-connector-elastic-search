@@ -56,7 +56,7 @@ npm install loopback-connector-esv6 --save --save-exact
 
 - **This connector will only connect to one index per datasource.**
 - This package is created to support ElasticSearch v6.x and 7.x only.
-- `docType` property is automatically added in mapping properties which is required to differentiate documents stored in index with loopback model data. It stores loopback modelName value. `docType: { type: "keyword", index: true }`
+- `docType` property is automatically added in mapping properties which is required to differentiate documents stored in index with loopback model data. It stores loopback modelName value. `'doctype.keyword': { type: "keyword", index: true }`
 
 ### Required
 
