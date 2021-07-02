@@ -65,7 +65,7 @@ describe('Connector', function() {
               }
             }, {
               match: {
-                docType: modelName
+                'doctype.keyword': modelName
               }
             }]
           }
@@ -175,7 +175,7 @@ describe('Connector', function() {
               },
               {
                 match: {
-                  docType: modelName
+                  'doctype.keyword': modelName
                 }
               }
             ]
@@ -240,7 +240,7 @@ describe('Connector', function() {
               },
               {
                 match: {
-                  docType: modelName
+                  'doctype.keyword': modelName
                 }
               }
             ]
@@ -290,7 +290,7 @@ describe('Connector', function() {
           bool: {
             must: [{
               match: {
-                docType: modelName
+                'doctype.keyword': modelName
               }
             }, {
               bool: {
@@ -391,7 +391,7 @@ describe('Connector', function() {
               },
               {
                 match: {
-                  docType: modelName
+                  'doctype.keyword': modelName
                 }
               }
             ]
@@ -440,7 +440,7 @@ describe('Connector', function() {
           bool: {
             must: [{
               match: {
-                docType: modelName
+                'doctype.keyword': modelName
               }
             }, {
               bool: {
@@ -519,7 +519,7 @@ describe('Connector', function() {
               },
               {
                 match: {
-                  docType: modelName
+                  'doctype.keyword': modelName
                 }
               }
             ]
@@ -575,7 +575,7 @@ describe('Connector', function() {
               }
             }, {
               match: {
-                docType: modelName
+                'doctype.keyword': modelName
               }
             }]
           }
@@ -636,7 +636,7 @@ describe('Connector', function() {
                 }
               }, {
                 match: {
-                  docType: modelName
+                  'doctype.keyword': modelName
                 }
               }
             ]
@@ -693,7 +693,7 @@ describe('Connector', function() {
                 }
               }, {
                 match: {
-                  docType: modelName
+                  'doctype.keyword': modelName
                 }
               }
             ]
@@ -766,7 +766,7 @@ describe('Connector', function() {
                 }
               }, {
                 match: {
-                  docType: modelName
+                  'doctype.keyword': modelName
                 }
               }
             ]
